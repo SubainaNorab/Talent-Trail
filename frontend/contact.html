@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Contact - TalentTrail</title>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-6">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl tracking-wide hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 font-semibold text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="text-lime-400 font-bold hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a href="signup.html" class="border border-white text-white px-4 py-1 rounded hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-4 py-1 rounded hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Contact Section -->
+  <section class="py-20 px-6 text-center">
+    <h1 class="text-4xl font-bold mb-6 text-lime-400">Get in Touch</h1>
+    <p class="text-gray-400 max-w-xl mx-auto mb-10">
+      We’re here to help! Reach out to us with your questions or feedback.
+    </p>
+
+    <form id="contactForm" action="#" method="POST" class="max-w-xl mx-auto bg-gray-900 p-8 rounded-xl text-left space-y-4 shadow-lg hover:shadow-lime-400 transition" novalidate>
+      <div>
+        <label class="block text-sm text-lime-400 mb-1">Name</label>
+        <input type="text" name="name" required placeholder="Your full name"
+          class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-lime-400">
+      </div>
+      <div>
+        <label class="block text-sm text-lime-400 mb-1">Email</label>
+        <input type="email" id="email" name="email" required placeholder="Your email address"
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov|pk|info)$"
+          class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-lime-400">
+        <small id="emailError" class="text-red-500 text-sm hidden mt-1">Please enter a valid email (e.g., user@example.com).</small>
+      </div>
+      <div>
+        <label class="block text-sm text-lime-400 mb-1">Message</label>
+        <textarea name="message" rows="4" required placeholder="Write your message..."
+          class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-lime-400"></textarea>
+      </div>
+      <button type="submit"
+        id="submitBtn"
+        class="bg-lime-400 text-black px-6 py-2 rounded font-semibold hover:bg-lime-300 transition">
+        Send Message
+      </button>
+    </form>
+    <div id="messageBox" class="hidden mt-4 text-center font-semibold"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script>
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageBox = document.getElementById('messageBox');
+
+    function showMessage(message, isError = false) {
+      messageBox.textContent = message;
+      messageBox.className = `mt-4 text-center font-semibold ${isError ? 'text-red-500' : 'text-lime-400'}`;
+      messageBox.classList.remove('hidden');
+      
+      setTimeout(() => {
+        messageBox.classList.add('hidden');
+      }, 5000);
+    }
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(contactForm);
+      const contactData = {
+        name: formData.get('name').trim(),
+        email: formData.get('email').trim(),
+        message: formData.get('message').trim()
+      };
+
+      // Basic validation
+      if (!contactData.name || !contactData.email || !contactData.message) {
+        showMessage('Please fill in all fields.', true);
+        return;
+      }
+
+      if (contactData.message.length < 10) {
+        showMessage('Message must be at least 10 characters long.', true);
+        return;
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const response = await contactAPI.submit(contactData);
+        
+        showMessage(response.message);
+        contactForm.reset();
+      } catch (error) {
+        showMessage(error.message || 'Failed to send message. Please try again.', true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
+    });
+  </script>
+  <script src="api.js"></script>
+
+</body>
+</html>

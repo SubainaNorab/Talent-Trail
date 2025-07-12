@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentTrail - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-lg z-10">
+    <div class="flex items-center space-x-4">
+      <!-- TalentTrail Logo + Link -->
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl hover:scale-105 transition">
+          TalentTrail
+        </span>
+      </a>
+      <ul class="hidden md:flex space-x-6 font-medium text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a href="signup.html" class="border border-white text-white px-4 py-1 rounded hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-4 py-1 rounded hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="text-center py-24 px-6 bg-gradient-to-b from-black to-gray-900">
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+      Welcome to <span class="text-lime-400">TalentTrail</span>
+    </h1>
+    <p class="text-gray-400 text-lg md:text-xl mb-10">
+      Bridging Students and Employers for a Better Future
+    </p>
+    <a href="signup.html" class="bg-lime-400 text-black px-8 py-3 rounded-full font-semibold text-lg hover:bg-lime-500 transition-all duration-300">
+      Join Us Today
+    </a>
+  </section>
+
+  <!-- Slider Section -->
+  <section class="py-10 bg-black text-center">
+    <div class="max-w-4xl mx-auto">
+      <div id="slider" class="relative w-full h-64 overflow-hidden rounded-lg shadow-lg border border-gray-800">
+        <div class="slide">
+          <img src="slide1.jpg" class="w-full h-64 object-cover" alt="Slide 1">
+        </div>
+        <div class="slide hidden">
+          <img src="slide2.jpg" class="w-full h-64 object-cover" alt="Slide 2">
+        </div>
+        <div class="slide hidden">
+          <img src="slide3.jpg" class="w-full h-64 object-cover" alt="Slide 3">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slider Script -->
+  <script>
+    $(document).ready(function () {
+      const slides = $("#slider .slide");
+      let index = 0;
+
+      slides.hide().eq(index).show(); // Show first slide initially
+
+      function showNextSlide() {
+        slides.eq(index).fadeOut(500, function () {
+          index = (index + 1) % slides.length;
+          slides.eq(index).fadeIn(500);
+        });
+      }
+
+      setInterval(showNextSlide, 3000);
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+</body>
+</html>

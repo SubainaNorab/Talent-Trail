@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Log In | TalentTrail</title>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-6">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl tracking-wide hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 font-semibold text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a href="signup.html" class="border border-white text-white px-5 py-2 rounded-lg hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-5 py-2 rounded-lg hover:bg-lime-300 transition font-bold">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Log In Form Section -->
+  <main class="flex items-center justify-center min-h-[calc(100vh-100px)] px-4">
+    <div class="w-full max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-lime-400 transition duration-300">
+      <h2 class="text-3xl font-bold text-lime-400 text-center mb-6">Log In</h2>
+      
+      <form id="loginForm" class="space-y-5" novalidate>
+        <div>
+          <label for="email" class="block text-gray-400 mb-1 font-semibold">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="Email Address" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition" />
+          <p id="emailError" class="mt-1 text-sm text-red-500 hidden" role="alert">Please enter a valid email.</p>
+        </div>
+
+        <div>
+          <label for="password" class="block text-gray-400 mb-1 font-semibold">Password</label>
+          <div class="relative">
+            <input id="password" name="password" type="password" placeholder="Password" required
+              class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition pr-10" />
+            <button type="button" id="togglePassword" aria-label="Toggle password visibility"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-lime-400 focus:outline-none">
+              👁️
+            </button>
+          </div>
+          <p id="passwordError" class="mt-1 text-sm text-red-500 hidden" role="alert">Password is required.</p>
+        </div>
+
+        <button type="submit" id="loginBtn"
+          class="w-full bg-lime-400 text-black py-3 rounded font-semibold hover:bg-lime-500 transition flex justify-center items-center space-x-2">
+          <span>Log In</span>
+          <svg id="loadingSpinner" class="animate-spin h-5 w-5 text-black hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+        </button>
+      </form>
+
+      <p id="loginMessage" class="mt-4 text-center font-semibold text-red-500 hidden" role="alert" tabindex="-1"></p>
+
+      <p class="text-sm text-center text-gray-400 mt-6">
+        Don't have an account? 
+        <a href="signup.html" class="text-lime-400 hover:underline">Sign up now</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm mt-10">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <script src="api.js"></script>
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = loginForm.email;
+    const passwordInput = loginForm.password;
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const loginMessage = document.getElementById('loginMessage');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    // Toggle password visibility
+    togglePasswordBtn.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        togglePasswordBtn.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        togglePasswordBtn.textContent = '👁️';
+      }
+    });
+
+    // Basic email validation regex
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showMessage(message, isError = false) {
+      loginMessage.textContent = message;
+      loginMessage.className = `mt-4 text-center font-semibold ${isError ? 'text-red-500' : 'text-lime-400'}`;
+      loginMessage.classList.remove('hidden');
+      loginMessage.setAttribute('tabindex', '0');
+      loginMessage.focus();
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      loginMessage.classList.add('hidden');
+      emailError.classList.add('hidden');
+      passwordError.classList.add('hidden');
+      loginMessage.setAttribute('tabindex', '-1');
+
+      let valid = true;
+
+      if (!isValidEmail(emailInput.value.trim())) {
+        emailError.classList.remove('hidden');
+        emailInput.focus();
+        valid = false;
+      }
+      if (passwordInput.value.trim() === '') {
+        passwordError.classList.remove('hidden');
+        if (valid) passwordInput.focus();
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      try {
+        // Show loading
+        loginBtn.disabled = true;
+        loadingSpinner.classList.remove('hidden');
+
+        const credentials = {
+          email: emailInput.value.trim(),
+          password: passwordInput.value.trim()
+        };
+
+        const response = await authAPI.login(credentials);
+        
+        // Store user data and token
+        localStorage.setItem('talenttrailUser', JSON.stringify({
+          _id: response.data.user._id,
+          email: response.data.user.email,
+          role: response.data.user.role,
+          token: response.data.token
+        }));
+
+        showMessage('Login successful! Redirecting...');
+
+        // Redirect based on role after delay
+        setTimeout(() => {
+          if (response.data.user.role === 'employer') {
+            window.location.href = 'employers.html';
+          } else if (response.data.user.role === 'student') {
+            window.location.href = 'students.html';
+          } else {
+            window.location.href = 'mainpage.html';
+          }
+        }, 1500);
+
+      } catch (error) {
+        showMessage(error.message || 'Login failed. Please try again.', true);
+      } finally {
+        loginBtn.disabled = false;
+        loadingSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Apply Now - TalentTrail</title>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-4">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-6 font-medium text-white ml-6">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a href="signup.html" class="border border-white text-white px-4 py-1 rounded hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-4 py-1 rounded hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <section class="text-center py-16 px-4">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-lime-400">Apply for Your Dream Opportunity</h1>
+    <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+      Fill out the form below to apply for an internship or job through TalentTrail.
+    </p>
+  </section>
+
+  <!-- Application Form -->
+  <section class="max-w-3xl mx-auto px-6 mb-24">
+    <form id="applicationForm" method="POST" enctype="multipart/form-data"
+      class="bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-lime-400 transition">
+
+      <div class="mb-6">
+        <label class="block mb-2 text-lime-400 font-semibold">Full Name</label>
+        <input type="text" name="fullName" required placeholder="Enter your full name" minlength="2" maxlength="100"
+          class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-lime-400 outline-none">
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-lime-400 font-semibold">Email Address</label>
+        <input type="email" name="email" required placeholder="your@email.com"
+          class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-lime-400 outline-none">
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-lime-400 font-semibold">Position You're Applying For</label>
+        <input type="text" name="position" required placeholder="e.g. AI Intern, Frontend Developer" minlength="2" maxlength="200"
+          class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-lime-400 outline-none">
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-lime-400 font-semibold">Company/Organization</label>
+        <input type="text" name="company" required placeholder="Company you're applying to" minlength="2" maxlength="200"
+          class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-lime-400 outline-none">
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-lime-400 font-semibold">Cover Letter / Why You're a Fit</label>
+        <textarea name="coverLetter" rows="5" required placeholder="Briefly explain why you're suitable..." minlength="10" maxlength="2000"
+          class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-lime-400 outline-none"></textarea>
+      </div>
+
+      <div class="mb-8">
+        <label class="block mb-2 text-lime-400 font-semibold">Upload Resume (PDF, DOC, DOCX)</label>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx" required
+          class="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded file:bg-lime-400 file:text-black file:font-bold file:border-none file:px-4 file:py-2 hover:file:bg-lime-300 transition">
+      </div>
+
+      <button type="submit" id="submitBtn"
+        class="w-full bg-lime-400 text-black py-3 rounded font-bold text-lg hover:bg-lime-300 transition">
+        Submit Application
+      </button>
+
+      <div id="messageBox" class="hidden mt-4 text-center font-semibold"></div>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <script src="api.js"></script>
+  <script>
+    const applicationForm = document.getElementById('applicationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageBox = document.getElementById('messageBox');
+
+    function showMessage(message, isError = false) {
+      messageBox.textContent = message;
+      messageBox.className = `mt-4 text-center font-semibold ${isError ? 'text-red-500' : 'text-lime-400'}`;
+      messageBox.classList.remove('hidden');
+      setTimeout(() => {
+        messageBox.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Check authentication on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const { authenticated, user } = checkAuth();
+
+      if (!authenticated) {
+        showMessage('Please log in to submit an application.', true);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      // Pre-fill user information if available
+      if (user && user.email) {
+        const emailInput = document.querySelector('input[name="email"]');
+        if (emailInput) {
+          emailInput.value = user.email;
+        }
+      }
+
+      if (user && user.fullname) {
+        const nameInput = document.querySelector('input[name="fullName"]');
+        if (nameInput) {
+          nameInput.value = user.fullname;
+        }
+      }
+    });
+
+    applicationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validate form before submission
+      if (!applicationForm.checkValidity()) {
+        applicationForm.reportValidity();
+        return;
+      }
+
+      // Double-check authentication before submitting
+      const { authenticated } = checkAuth();
+      if (!authenticated) {
+        showMessage('Please log in to submit an application.', true);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+        return;
+      }
+
+      // Get form data and validate manually
+      const formData = new FormData(applicationForm);
+      
+      // Validate required fields manually
+      const fullName = formData.get('fullName')?.trim();
+      const email = formData.get('email')?.trim();
+      const position = formData.get('position')?.trim();
+      const company = formData.get('company')?.trim();
+      const coverLetter = formData.get('coverLetter')?.trim();
+      const resume = formData.get('resume');
+
+      // Client-side validation
+      const errors = [];
+      
+      if (!fullName || fullName.length < 2 || fullName.length > 100) {
+        errors.push('Full name must be between 2 and 100 characters');
+      }
+      
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.push('Please provide a valid email address');
+      }
+      
+      if (!position || position.length < 2 || position.length > 200) {
+        errors.push('Position must be between 2 and 200 characters');
+      }
+
+      if (!company || company.length < 2 || company.length > 200) {
+        errors.push('Company must be between 2 and 200 characters');
+      }
+      
+      if (!coverLetter || coverLetter.length < 10 || coverLetter.length > 2000) {
+        errors.push('Cover letter must be between 10 and 2000 characters');
+      }
+      
+      if (!resume || resume.size === 0) {
+        errors.push('Please upload a resume file');
+      }
+
+      if (errors.length > 0) {
+        showMessage('Please fix the following errors: ' + errors.join(', '), true);
+        return;
+      }
+
+      // Debug: Log form data
+      console.log('Submitting application with data:');
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(key, `File: ${value.name} (${value.size} bytes)`);
+        } else {
+          console.log(key, value);
+        }
+      }
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        const response = await applicationsAPI.submit(formData);
+        
+        showMessage('Application submitted successfully!');
+        applicationForm.reset();
+
+        setTimeout(() => {
+          window.location.href = 'students.html';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Application submission error:', error);
+        
+        if (error.status === 401) {
+          showMessage('Your session has expired. Please log in again.', true);
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          showMessage(error.message || 'Failed to submit application. Please try again.', true);
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
+      }
+    });
+  </script>
+</body>
+</html>

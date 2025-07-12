@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Sign Up | TalentTrail</title>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-6">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl tracking-wide hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 font-semibold text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a href="signup.html" class="border border-white text-white px-5 py-2 rounded-lg hover:border-lime-400 hover:text-lime-400 transition font-bold">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-5 py-2 rounded-lg hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Sign Up Form Section -->
+  <main class="flex items-center justify-center min-h-[calc(100vh-100px)] px-4">
+    <div class="w-full max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-lime-400 transition duration-300">
+      <h2 class="text-3xl font-bold text-lime-400 text-center mb-6">Create an Account</h2>
+
+      <form id="signupForm" action="#" method="POST" class="space-y-5" novalidate>
+        <div>
+          <label for="fullname" class="block mb-1 text-gray-400 font-semibold">Full Name <span class="text-red-500">*</span></label>
+          <input id="fullname" name="fullname" type="text" placeholder="Your full name" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition" />
+        </div>
+
+        <div>
+          <label for="email" class="block mb-1 text-gray-400 font-semibold">Email Address <span class="text-red-500">*</span></label>
+          <input id="email" name="email" type="email" placeholder="example@mail.com" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition" />
+          <small class="text-red-500 hidden mt-1 text-sm" id="emailError">Please enter a valid email address (e.g., example@gmail.com).</small>
+        </div>
+
+        <div>
+          <label for="role" class="block mb-1 text-gray-400 font-semibold">Account Type <span class="text-red-500">*</span></label>
+          <select id="role" name="role" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition">
+            <option value="" disabled selected>Select your role</option>
+            <option value="student">Student</option>
+            <option value="employer">Employer</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="password" class="block mb-1 text-gray-400 font-semibold">Password <span class="text-red-500">*</span></label>
+          <input id="password" name="password" type="password" placeholder="Create a password" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition" />
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block mb-1 text-gray-400 font-semibold">Confirm Password <span class="text-red-500">*</span></label>
+          <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter your password" required
+            class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400 transition" />
+          <p id="passwordMismatch" class="hidden text-red-500 mt-1 text-sm" role="alert">Passwords do not match.</p>
+        </div>
+
+        <button type="submit" id="submitBtn"
+          class="w-full bg-lime-400 text-black py-3 rounded font-semibold hover:bg-lime-500 transition disabled:opacity-60 disabled:cursor-not-allowed" disabled>
+          Sign Up
+        </button>
+      </form>
+
+      <p class="text-sm text-center text-gray-400 mt-6">
+        Already have an account? 
+        <a href="login.html" class="text-lime-400 hover:underline">Log in here</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm mt-10">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="api.js"></script>
+  <script>
+    const signupForm = document.getElementById('signupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const passwordInput = signupForm.password;
+    const confirmPasswordInput = signupForm.confirmPassword;
+    const passwordMismatchMsg = document.getElementById('passwordMismatch');
+    const emailInput = signupForm.email;
+    const emailError = document.getElementById('emailError');
+
+    function validateForm() {
+      const isValid = signupForm.checkValidity();
+      const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
+      const emailValid = emailInput.validity.valid;
+
+      if (!emailValid && emailInput.value !== '') {
+        emailError.classList.remove('hidden');
+      } else {
+        emailError.classList.add('hidden');
+      }
+
+      if (!passwordsMatch && confirmPasswordInput.value !== '') {
+        passwordMismatchMsg.classList.remove('hidden');
+      } else {
+        passwordMismatchMsg.classList.add('hidden');
+      }
+
+      submitBtn.disabled = !(isValid && passwordsMatch && emailValid);
+    }
+
+    signupForm.addEventListener('input', validateForm);
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing up...';
+
+      try {
+        const userData = {
+        fullname: signupForm.fullname.value.trim(),
+        email: signupForm.email.value.trim().toLowerCase(),
+        password: signupForm.password.value,
+        role: signupForm.role.value
+      };
+        alert('Registration successful! Please log in.');
+        window.location.href = 'login.html';
+
+        await authAPI.signup(userData);
+      } catch (error) {
+        // console.error('Signup failed details:', error);
+        // alert(error.errors?.join('\n') || error.message || 'Signup failed.');
+        if (error.errors && Array.isArray(error.errors)) {
+          const msgs = error.errors.map(e => `• ${e.msg}`).join('\n');
+          alert(`Validation failed:\n${msgs}`);
+        } else {
+          alert(error.message || 'Signup failed.');
+        }
+
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
+      }
+    });
+
+    // Initial validation state
+    validateForm();
+
+  </script>
+
+</body>
+</html>

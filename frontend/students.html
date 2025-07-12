@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Students - TalentTrail</title>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-6">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl tracking-wide hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 font-semibold text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="text-lime-400 font-bold hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a href="signup.html" class="border border-white text-white px-5 py-2 rounded-lg hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-5 py-2 rounded-lg hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-6 max-w-5xl mx-auto text-center">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 text-lime-400 tracking-wide leading-tight">Empowering Students for Their Career Journey</h1>
+    <p class="text-gray-400 text-lg max-w-3xl mx-auto mb-16">
+      Discover internships and job opportunities tailored to your skills and ambitions. Manage applications, get feedback, and track your progress all in one smart platform.
+    </p>
+  </section>
+
+  <!-- Search and Filters -->
+  <section class="max-w-5xl mx-auto px-6 mb-12 flex flex-col md:flex-row gap-4 justify-center items-center">
+    <input
+      type="text"
+      id="jobSearchInput"
+      aria-label="Search jobs"
+      placeholder="Search jobs, companies, or locations..."
+      class="rounded-lg p-3 bg-gray-800 border border-gray-700 text-white w-full md:w-1/2 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+      oninput="filterJobs()"
+    />
+
+    <select
+      id="filterType"
+      aria-label="Filter by Job Type"
+      class="rounded-lg p-3 bg-gray-800 border border-gray-700 text-white w-full md:w-1/4 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+      onchange="filterJobs()"
+    >
+      <option value="">All Types</option>
+      <option value="Internship">Internship</option>
+      <option value="Full-time">Full-time</option>
+      <option value="Part-time">Part-time</option>
+      <option value="Remote">Remote</option>
+    </select>
+
+    <select
+      id="filterLocation"
+      aria-label="Filter by Location"
+      class="rounded-lg p-3 bg-gray-800 border border-gray-700 text-white w-full md:w-1/4 focus:outline-none focus:ring-2 focus:ring-lime-400 transition"
+      onchange="filterJobs()"
+    >
+      <option value="">All Locations</option>
+      <option value="Remote">Remote</option>
+      <option value="On-site">On-site</option>
+      <option value="Hybrid">Hybrid</option>
+    </select>
+  </section>
+
+  <!-- Job Listings Section -->
+  <main class="max-w-5xl mx-auto mt-8 px-6" role="main" aria-labelledby="jobs-heading">
+    <h2 id="jobs-heading" class="text-4xl font-extrabold text-lime-400 text-center mb-12">Available Opportunities</h2>
+    <div id="jobList" class="grid gap-8 md:grid-cols-2"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <!-- Scripts -->
+  <script src="api.js"></script>
+  <script>
+    let jobs = [];
+
+    jobsAPI.getAll()
+      .then(response => {
+        jobs = response.data.jobs || [];
+        renderJobs(jobs);
+      })
+      .catch(error => {
+        console.error("Failed to load jobs:", error);
+      });
+
+    const jobList = document.getElementById('jobList');
+
+    function toggleSave(button, jobTitle) {
+      const saved = button.classList.toggle('bg-lime-600');
+      button.textContent = saved ? "Saved" : "Save";
+      alert(saved ? `Saved job: ${jobTitle}` : `Removed saved job: ${jobTitle}`);
+    }
+
+    function renderJobs(filteredJobs) {
+      jobList.innerHTML = '';
+      if(filteredJobs.length === 0){
+        jobList.innerHTML = `<p class="text-gray-500 text-center col-span-full">No jobs found matching your search.</p>`;
+        return;
+      }
+      
+      filteredJobs.forEach(job => {
+        const jobCard = document.createElement('div');
+        jobCard.className = 'bg-gray-900 rounded-xl p-6 hover:bg-gray-800 transition shadow-lg flex flex-col justify-between';
+
+        jobCard.innerHTML = `
+          <div>
+            <h3 class="text-2xl font-bold mb-2">${job.title}</h3>
+            <p class="text-gray-400 mb-1"><strong>Company:</strong> ${job.company}</p>
+            <p class="text-gray-400 mb-1"><strong>Location:</strong> ${job.location}</p>
+            <p class="text-gray-400 mb-1"><strong>Type:</strong> ${job.jobType}</p>
+            <p class="text-gray-400 mb-6">${job.description}</p>
+          </div>
+          <div class="flex space-x-4">
+            <a href="apply.html" class="bg-lime-400 text-black px-4 py-2 rounded font-semibold hover:bg-lime-300 transition flex-1 text-center" aria-label="Apply for ${job.title}">Apply Now</a>
+            <button aria-label="Save job ${job.title}" class="saveJobBtn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded font-semibold transition flex-1">Save</button>
+          </div>
+        `;
+
+        // Add event listeners after creating the card
+        const saveBtn = jobCard.querySelector('.saveJobBtn');
+        saveBtn.addEventListener('click', () => {
+          toggleSave(saveBtn, job.title);
+        });
+
+        jobList.appendChild(jobCard);
+      });
+    }
+
+    function filterJobs() {
+      const query = document.getElementById('jobSearchInput').value.toLowerCase();
+      const typeFilter = document.getElementById('filterType').value;
+      const locationFilter = document.getElementById('filterLocation').value;
+
+      const filtered = jobs.filter(job => {
+        const matchesText = job.title.toLowerCase().includes(query) ||
+                            job.company.toLowerCase().includes(query) ||
+                            job.location.toLowerCase().includes(query);
+
+        const matchesType = typeFilter === "" || job.jobType === typeFilter;
+        const matchesLocation = locationFilter === "" || job.location === locationFilter || job.location.toLowerCase().includes(locationFilter.toLowerCase());
+
+        return matchesText && matchesType && matchesLocation;
+      });
+      renderJobs(filtered);
+    }
+  </script>
+
+</body>
+</html>

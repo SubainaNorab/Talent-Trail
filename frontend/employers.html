@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Employers - TalentTrail</title>
+  <style>
+    /* Fade in animation for job posts */
+    .fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <script>
+  const authUser = JSON.parse(localStorage.getItem("talenttrailUser"));
+
+  // If student, block access and redirect
+  if (authUser?.role === "student") {
+    alert("Access denied. Students are not authorized to access the Employers page.");
+    window.location.href = "mainpage.html"; // or any other safe page
+  }
+
+  // Optional: disable nav link for extra safety
+  window.addEventListener("DOMContentLoaded", () => {
+    const employerLink = document.querySelector('a[href="employers.html"]');
+    if (authUser?.role === "student" && employerLink) {
+      employerLink.classList.add("pointer-events-none", "opacity-50", "cursor-not-allowed");
+      employerLink.setAttribute("title", "Access not authorized");
+    }
+  });
+</script>
+
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-6 py-4 bg-black text-white shadow-md">
+    <div class="flex items-center space-x-6">
+      <a href="mainpage.html" class="flex items-center space-x-2">
+        <span class="bg-lime-400 text-black font-bold px-3 py-1 rounded text-2xl tracking-wide hover:scale-105 transition">TalentTrail</span>
+      </a>
+      <ul class="hidden md:flex space-x-8 font-semibold text-white ml-4">
+        <li><a href="about.html" class="hover:text-lime-400 transition">About</a></li>
+        <li><a href="students.html" class="hover:text-lime-400 transition">Students</a></li>
+        <li><a href="employers.html" class="text-lime-400 font-bold hover:text-lime-400 transition">Employers</a></li>
+        <li><a href="contact.html" class="hover:text-lime-400 transition">Contact</a></li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a href="signup.html" class="border border-white text-white px-5 py-2 rounded-lg hover:border-lime-400 hover:text-lime-400 transition">Sign up</a>
+      <a href="login.html" class="bg-lime-400 text-black px-5 py-2 rounded-lg hover:bg-lime-300 transition">Log in</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-6 max-w-5xl mx-auto text-center">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 text-lime-400 tracking-wide leading-tight">Post Your Job or Internship Opportunities</h1>
+    <p class="text-gray-400 text-lg max-w-3xl mx-auto mb-16">
+      Reach thousands of students by posting your job or internship. Fill out the form below and TalentTrail will help match the best candidates to your openings.
+    </p>
+  </section>
+
+  <!-- Job Post Form -->
+  <section class="max-w-3xl mx-auto px-6 mb-12">
+    <form id="jobPostForm" class="bg-gray-900 p-8 rounded-xl shadow-xl space-y-6" novalidate>
+      <input type="hidden" id="jobId" />
+      
+      <div>
+        <label for="title" class="block mb-1 text-gray-400 font-semibold">Job/Internship Title <span class="text-red-500">*</span></label>
+        <input id="title" name="title" type="text" placeholder="e.g., Frontend Developer Intern" class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" required />
+      </div>
+      
+      <div>
+        <label for="company" class="block mb-1 text-gray-400 font-semibold">Company Name <span class="text-red-500">*</span></label>
+        <input id="company" name="company" type="text" placeholder="e.g., TechNova" class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" required />
+      </div>
+      
+      <div>
+        <label for="jobType" class="block mb-1 text-gray-400 font-semibold">Job Type <span class="text-red-500">*</span></label>
+        <select id="jobType" name="jobType" required class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400">
+          <option value="" disabled selected>Select Job Type</option>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Internship">Internship</option>
+          <option value="Remote">Remote</option>
+        </select>
+      </div>
+      
+      <div>
+        <label for="location" class="block mb-1 text-gray-400 font-semibold">Location (City or Remote) <span class="text-red-500">*</span></label>
+        <input id="location" name="location" type="text" placeholder="e.g., Remote or New York" class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" required />
+      </div>
+      
+      <div>
+        <label for="description" class="block mb-1 text-gray-400 font-semibold">Job Description <span class="text-red-500">*</span></label>
+        <textarea id="description" name="description" rows="5" placeholder="Detailed job description..." class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" required></textarea>
+      </div>
+      
+      <div>
+        <label for="salary" class="block mb-1 text-gray-400 font-semibold">Salary or Stipend (Optional)</label>
+        <input id="salary" name="salary" type="number" min="0" placeholder="e.g., 50000" class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" />
+      </div>
+      
+      <div>
+        <label for="deadline" class="block mb-1 text-gray-400 font-semibold">Application Deadline <span class="text-red-500">*</span></label>
+        <input id="deadline" name="deadline" type="date" class="w-full px-4 py-3 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-400" required />
+      </div>
+
+      <div class="flex space-x-4">
+        <button type="submit" id="submitBtn" disabled class="flex-1 bg-lime-400 text-black py-3 rounded font-semibold hover:bg-lime-500 transition disabled:opacity-60 disabled:cursor-not-allowed">Post Job</button>
+        <button type="button" id="clearBtn" class="flex-1 bg-gray-700 text-white py-3 rounded font-semibold hover:bg-gray-600 transition">Clear Form</button>
+      </div>
+    </form>
+
+    <div id="messageBox" role="alert" aria-live="polite" class="mt-4 text-center font-semibold text-lime-400"></div>
+  </section>
+
+  <!-- Job Posts List -->
+  <section class="max-w-5xl mx-auto px-6 mb-20">
+    <h2 class="text-3xl font-bold mb-6 text-lime-400">Your Job & Internship Posts</h2>
+    <div id="jobsList" class="space-y-6"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-gray-800 text-center py-6 text-gray-500 text-sm">
+    © 2025 TalentTrail. All rights reserved.
+  </footer>
+
+  <!-- CRUD Script -->
+  <script>
+
+    const form = document.getElementById('jobPostForm');
+    const jobsList = document.getElementById('jobsList');
+    const submitBtn = document.getElementById('submitBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const jobIdInput = document.getElementById('jobId');
+    const messageBox = document.getElementById('messageBox');
+
+    function clearErrorMessages() {
+      const errorMessages = form.querySelectorAll('.error-message');
+      errorMessages.forEach(msg => {
+        msg.textContent = '';
+        msg.classList.add('hidden');
+      });
+      // Remove error styling from inputs
+      const inputs = form.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        input.classList.remove('border-red-500');
+      });
+    }
+
+    function showFieldError(fieldName, message) {
+      const field = form.querySelector(`[name="${fieldName}"]`);
+      if (field) {
+        const errorDiv = field.parentNode.querySelector('.error-message');
+        if (errorDiv) {
+          errorDiv.textContent = message;
+          errorDiv.classList.remove('hidden');
+          field.classList.add('border-red-500');
+        }
+      }
+    }
+
+    // Enable submit button only if form is valid
+    function validateFormData() {
+      clearErrorMessages();
+      const formData = new FormData(form);
+      const jobData = Object.fromEntries(formData.entries());
+
+      // Use the validation function from api.js
+      const errors = window.validateJobData ? window.validateJobData(jobData) : [];
+
+      if (errors.length > 0) {
+        errors.forEach(error => {
+          if (error.includes('title')) showFieldError('title', error);
+          else if (error.includes('company')) showFieldError('company', error);
+          else if (error.includes('job type')) showFieldError('jobType', error);
+          else if (error.includes('location')) showFieldError('location', error);
+          else if (error.includes('description')) showFieldError('description', error);
+          else if (error.includes('deadline')) showFieldError('deadline', error);
+          else if (error.includes('salary')) showFieldError('salary', error);
+        });
+        return false;
+      }
+
+      return true;
+    }
+
+    function validateForm() {
+      const isValid = validateFormData();
+      submitBtn.disabled = !isValid;
+    }
+
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+
+    // Display message
+    function showMessage(message, isError = false) {
+      messageBox.textContent = message;
+      messageBox.className = `mt-4 text-center font-semibold ${isError ? 'text-red-400' : 'text-lime-400'}`;
+      setTimeout(() => { messageBox.textContent = ''; }, 6000);
+    }
+
+    // Render jobs
+    async function renderJobs() {
+      try {
+        const result = await jobsAPI.getMyJobs();
+        const jobs = result.data.jobs;
+
+        if (!jobs.length) {
+          jobsList.innerHTML = '<p class="text-gray-400 italic">No job postings yet. Add some!</p>';
+          return;
+        }
+
+        jobsList.innerHTML = jobs.map(job => `
+          <article class="bg-gray-900 p-6 rounded-xl shadow-lg border border-gray-700 fade-in" tabindex="0">
+            <h3 class="text-xl font-semibold text-lime-400">${job.title}</h3>
+            <p class="text-gray-300 mt-1"><strong>Company:</strong> ${job.company}</p>
+            <p class="text-gray-300 mt-1"><strong>Type:</strong> ${job.jobType}</p>
+            <p class="text-gray-300 mt-1"><strong>Location:</strong> ${job.location}</p>
+            <p class="text-gray-300 mt-4 whitespace-pre-line">${job.description}</p>
+            ${job.salary ? `<p class="text-gray-300 mt-4"><strong>Salary:</strong> $${job.salary.toLocaleString()}</p>` : ''}
+            <p class="text-gray-300 mt-2"><strong>Deadline:</strong> <time datetime="${job.deadline}">${new Date(job.deadline).toLocaleDateString()}</time></p>
+            <div class="mt-4 flex gap-4">
+              <button class="editBtn bg-lime-400 text-black px-4 py-2 rounded" data-id="${job._id}">Edit</button>
+              <button class="deleteBtn bg-red-600 text-white px-4 py-2 rounded" data-id="${job._id}">Delete</button>
+            </div>
+          </article>
+        `).join('');
+
+        // Add fade-in effect
+        const articles = jobsList.querySelectorAll('article');
+        articles.forEach((article, index) => {
+          article.style.animationDelay = `${index * 0.1}s`;
+          article.classList.add('fade-in');
+        });
+
+      } catch (error) {
+        showMessage('Failed to load your jobs.', true);
+      }
+    }
+
+
+    // Reset form
+    function resetForm() {
+      form.reset();
+      jobIdInput.value = '';
+      submitBtn.textContent = 'Post Job';
+      submitBtn.disabled = true;
+      clearErrorMessages();
+    }
+
+
+    // Handle form submit (create/update)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // Set minimum date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('deadline').setAttribute('min', today);
+
+      const formData = new FormData(form);
+      const jobData = Object.fromEntries(formData.entries());
+      console.log("Sending job data:", jobData);
+      jobData.deadline = new Date(jobData.deadline).toISOString();
+      if (jobData.salary) {
+        jobData.salary = Number(jobData.salary); // convert salary to number
+      }
+      const user = JSON.parse(localStorage.getItem("talenttrailUser"));
+      console.log("User from localStorage:", user);
+      jobData.postedBy = user.id || user._id;
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Posting...';
+
+        let res;
+        if (jobIdInput.value) {
+          res = await jobsAPI.update(jobIdInput.value, jobData);
+          showMessage('Job updated successfully!');
+        } else {
+          res = await jobsAPI.create(jobData);
+          showMessage('Job posted successfully!');
+        }
+
+
+        showMessage('Job posted successfully!');
+        resetForm();
+        renderJobs(); // Refresh job list from server
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (error) {
+        console.error('API error:', error);
+        showMessage(error.message || 'Failed to post job.', true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Post Job';
+      }
+    });
+
+
+    // Handle Edit/Delete using event delegation
+    jobsList.addEventListener('click', async (e) => {
+      const target = e.target;
+      const id = target.dataset.id;
+
+      if (target.classList.contains('editBtn')) {
+        try {
+          const result = await jobsAPI.getById(id);
+          const job = result.data.job;
+
+          form.title.value = job.title;
+          form.company.value = job.company;
+          form.jobType.value = job.jobType;
+          form.location.value = job.location;
+          form.description.value = job.description;
+          form.salary.value = job.salary || '';
+          form.deadline.value = job.deadline.split('T')[0];
+
+          jobIdInput.value = job._id;
+          submitBtn.textContent = 'Update Job';
+          submitBtn.disabled = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+          showMessage('Failed to load job for editing.');
+        }
+
+      } else if (target.classList.contains('deleteBtn')) {
+        if (confirm('Are you sure you want to delete this job posting?')) {
+          try {
+            await jobsAPI.delete(id);
+            showMessage('Job deleted successfully!');
+            renderJobs();
+            if (jobIdInput.value === id) resetForm();
+          } catch (error) {
+            showMessage('Failed to delete job.');
+          }
+        }
+      }
+    });
+
+
+    // Clear form button
+    clearBtn.addEventListener('click', () => {
+      resetForm();
+      messageBox.textContent = '';
+    });
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('deadline').setAttribute('min', today);
+
+    // Initial render on page load
+    renderJobs();
+    validateForm();
+  </script>
+  <script src="api.js"></script>
+</body>
+</html>
